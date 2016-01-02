@@ -1,2 +1,4 @@
 ---
-# tasks file for correcthorse.haproxy
+- name: install haproxy
+  yum: name=haproxy state=present
+
