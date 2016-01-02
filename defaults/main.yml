@@ -1,2 +1,9 @@
 ---
-# defaults file for correcthorse.haproxy
+haproxy_ssl: true
+haproxy_default_mode: http
+haproxy_default_options:
+  - httplog
+  - dontlognull
+  - http-server-close
+  - forwardfor except 127.0.0.0/8
+  - redispatch
