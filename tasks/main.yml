@@ -1,4 +1,27 @@
 ---
 - name: install haproxy
   yum: name=haproxy state=present
+  tags:
+    - haproxy
+    - packaging
 
+- name: configure sysconfig file
+  template: src=haproxy.sysconfig.j2 dest=/etc/sysconfig/haproxy owner=root group=root mode=0644
+  notify: restart haproxy
+  tags:
+    - haproxy
+    - configuration
+
+- name: configure haproxy
+  template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg owner=root group=root mode=0644
+  notify: restart haproxy
+  tags:
+    - haproxy
+    - configuration
+
+- name: ensure haproxy is enabled and running
+  service: name=haproxy enabled=yes state=started
+  tags:
+    - haproxy
+    - configuration
+    - services
