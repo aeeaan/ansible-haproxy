@@ -60,3 +60,27 @@ defaults
     timeout check           10s
     maxconn                 3000
 
+{% if haproxy_ssl %}
+frontend http-https
+    bind :80
+    bind :443 ssl crt /etc/haproxy.pem
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+{% else %}
+frontend http
+    bind :80
+{% endif %}
+{% for proxy in haproxy_reverse_proxies %}
+    acl is_site{{ loop.index }} hdr_end(host) -i {{ proxy.host }}
+{% endfor %}
+
+{% for proxy in haproxy_reverse_proxies %}
+    use_backend site{{ loop.index }} if is_site{{ loop.index }}
+{% endfor %}
+
+{% for proxy in haproxy_reverse_proxies %}
+backend site{{ loop.index }}
+    balance roundrobin
+{% for node in proxy.nodes %}
+    server node{{ loop.index }} {{ node }}
+{% endfor %}
+{% endfor %}

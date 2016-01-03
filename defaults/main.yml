@@ -1,5 +1,5 @@
 ---
-haproxy_ssl: true
+haproxy_ssl: false
 haproxy_default_mode: http
 haproxy_default_options:
   - httplog
@@ -7,3 +7,4 @@ haproxy_default_options:
   - http-server-close
   - forwardfor except 127.0.0.0/8
   - redispatch
+haproxy_reverse_proxies: []
